@@ -32,12 +32,12 @@
       "sourcePath": "2"
     },
     "body": {
-      "file": "body.png",
-      "x": 113,
-      "y": 1666,
-      "width": 2392,
-      "height": 1191,
-      "sourceLayer": "图层 25",
+      "file": "body-v2.png",
+      "x": 111,
+      "y": 1663,
+      "width": 2397,
+      "height": 1194,
+      "sourceLayer": "body-override.png",
       "sourcePath": "3"
     },
     "bodyLines": {
@@ -47,7 +47,8 @@
       "width": 2397,
       "height": 1193,
       "sourceLayer": "图层 24",
-      "sourcePath": "4"
+      "sourcePath": "4",
+      "enabled": false
     },
     "face": {
       "file": "face.png",

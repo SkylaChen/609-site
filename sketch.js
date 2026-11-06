@@ -93,7 +93,7 @@ async function setup() {
   textFont("Arial");
 
   try {
-    artwork = await loadJSON(ART_PATH + "manifest.json");
+    artwork = await loadJSON(ART_PATH + "manifest.json?v=body-11");
     if (artwork.ready === false) {
       canvas.hide();
       noLoop();
@@ -105,6 +105,7 @@ async function setup() {
     avatar.y = artwork.anchor.y;
     // Decode one image at a time to reduce peak memory on phones.
     for (const [name, layer] of Object.entries(artwork.layers)) {
+      if (layer.enabled === false) continue;
       avatarImages[name] = await loadImage(ART_PATH + layer.file);
     }
     const eye = artwork.layers.eyeWhite;
@@ -443,6 +444,7 @@ function drawAvatar() {
 
 function drawArtLayer(name, followsHead = false) {
   const layer = artwork.layers[name];
+  if (layer.enabled === false) return;
   push();
   if (followsHead) {
     const pivot = artwork.headPivot;
