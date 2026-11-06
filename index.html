@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>609 — Avatar</title>
+  <script src="https://cdn.jsdelivr.net/npm/p5@2.3.1/lib/p5.js"></script>
+  <script src="https://unpkg.com/ml5@1/dist/ml5.min.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #f8f6fa; }
+    #avatar-stage {
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    #avatar-stage canvas { display: block; flex: none; width: 100vw !important; height: auto !important; }
+    @media (orientation: landscape) {
+      #avatar-stage canvas { width: auto !important; height: 100vh !important; height: 100dvh !important; }
+    }
+    h3, nav { position: fixed; z-index: 1; margin: 0; left: 12px; }
+    h3 { top: 12px; font-family: "Comic Sans MS", "Comic Sans", cursive; }
+    nav { bottom: 12px; font: 14px Arial, sans-serif; }
+    nav a { color: #4d4658; }
+  </style>
+</head>
+<body>
+  <h3>609</h3>
+  <main id="avatar-stage"><p id="project-status" style="padding:24px;text-align:center;font:16px/1.8 Arial;color:#4d4658">609<br>正在加载 609 avatar…</p></main>
+  <script src="sketch.js?v=clean-8"></script>
+</body>
+</html>
