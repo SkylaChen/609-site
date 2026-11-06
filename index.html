@@ -29,6 +29,10 @@
 <body>
   <h3>609</h3>
   <main id="avatar-stage"><p id="project-status" style="padding:24px;text-align:center;font:16px/1.8 Arial;color:#4d4658">609<br>正在加载 609 avatar…</p></main>
-  <script src="sketch.js?v=clean-8"></script>
+  <div style="position:fixed;left:12px;right:12px;bottom:24px;z-index:10;text-align:center;font:14px/1.5 Arial;color:#4d4658">
+    <div id="tracking-status" hidden style="background:#fffe;border-radius:8px;padding:8px"></div>
+    <button id="start-tracking" type="button" hidden onclick="startCameraTracking()" style="font:inherit;padding:12px 18px;margin-top:8px;border:1px solid #bbaec6;border-radius:10px;background:#fff">启动人脸追踪</button>
+  </div>
+  <script src="sketch.js?v=mobile-start-10"></script>
 </body>
 </html>

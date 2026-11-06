@@ -1,0 +1,197 @@
+{
+  "ready": true,
+  "canvas": {
+    "width": 2595,
+    "height": 2857
+  },
+  "anchor": {
+    "x": 1298,
+    "y": 1050
+  },
+  "headPivot": {
+    "x": 1298,
+    "y": 1570
+  },
+  "layers": {
+    "backHair": {
+      "file": "backHair.png",
+      "x": 217,
+      "y": 119,
+      "width": 1954,
+      "height": 2324,
+      "sourceLayer": "后发片",
+      "sourcePath": "1"
+    },
+    "neck": {
+      "file": "neck.png",
+      "x": 959,
+      "y": 1220,
+      "width": 625,
+      "height": 1386,
+      "sourceLayer": "已插入图像",
+      "sourcePath": "2"
+    },
+    "body": {
+      "file": "body.png",
+      "x": 113,
+      "y": 1666,
+      "width": 2392,
+      "height": 1191,
+      "sourceLayer": "图层 25",
+      "sourcePath": "3"
+    },
+    "bodyLines": {
+      "file": "bodyLines.png",
+      "x": 111,
+      "y": 1664,
+      "width": 2397,
+      "height": 1193,
+      "sourceLayer": "图层 24",
+      "sourcePath": "4"
+    },
+    "face": {
+      "file": "face.png",
+      "x": 757,
+      "y": 585,
+      "width": 1023,
+      "height": 1042,
+      "sourceLayer": "脸片",
+      "sourcePath": "5"
+    },
+    "eyeWhite": {
+      "file": "eyeWhite.png",
+      "x": 901,
+      "y": 1000,
+      "width": 699,
+      "height": 104,
+      "sourceLayer": "眼白",
+      "sourcePath": "6/0"
+    },
+    "pupils": {
+      "file": "pupils.png",
+      "x": 959,
+      "y": 961,
+      "width": 601,
+      "height": 158,
+      "sourceLayer": "眼珠",
+      "sourcePath": "6/1"
+    },
+    "eyesHalf": {
+      "file": "eyesHalf.png",
+      "x": 785,
+      "y": 865,
+      "width": 890,
+      "height": 419,
+      "sourceLayer": "眼睛半睁",
+      "sourcePath": "6/2"
+    },
+    "eyesOpen": {
+      "file": "eyesOpen.png",
+      "x": 833,
+      "y": 919,
+      "width": 855,
+      "height": 264,
+      "sourceLayer": "睁开眼",
+      "sourcePath": "6/3"
+    },
+    "eyesClosed": {
+      "file": "eyesClosed.png",
+      "x": 830,
+      "y": 910,
+      "width": 812,
+      "height": 285,
+      "sourceLayer": "眼睛闭",
+      "sourcePath": "6/4"
+    },
+    "mouthRound": {
+      "file": "mouthRound.png",
+      "x": 1186,
+      "y": 1375,
+      "width": 132,
+      "height": 104,
+      "sourceLayer": "图层 21",
+      "sourcePath": "7/0"
+    },
+    "mouthClosed": {
+      "file": "mouthClosed.png",
+      "x": 1185,
+      "y": 1402,
+      "width": 135,
+      "height": 45,
+      "sourceLayer": "图层 21",
+      "sourcePath": "7/1"
+    },
+    "mouthWide": {
+      "file": "mouthWide.png",
+      "x": 1178,
+      "y": 1373,
+      "width": 172,
+      "height": 91,
+      "sourceLayer": "图层 21",
+      "sourcePath": "7/2"
+    },
+    "mouthOpen": {
+      "file": "mouthOpen.png",
+      "x": 1166,
+      "y": 1380,
+      "width": 186,
+      "height": 90,
+      "sourceLayer": "图层 21",
+      "sourcePath": "7/3"
+    },
+    "mouthParted": {
+      "file": "mouthParted.png",
+      "x": 1166,
+      "y": 1380,
+      "width": 186,
+      "height": 90,
+      "sourceLayer": "图层 21",
+      "sourcePath": "7/4"
+    },
+    "mouthRelaxed": {
+      "file": "mouthRelaxed.png",
+      "x": 1165,
+      "y": 1384,
+      "width": 200,
+      "height": 61,
+      "sourceLayer": "图层 21",
+      "sourcePath": "7/5"
+    },
+    "frontHair": {
+      "file": "frontHair.png",
+      "x": 693,
+      "y": 229,
+      "width": 1124,
+      "height": 1316,
+      "sourceLayer": "前发",
+      "sourcePath": "8"
+    },
+    "browsRaised": {
+      "file": "browsRaised.png",
+      "x": 856,
+      "y": 876,
+      "width": 782,
+      "height": 97,
+      "sourceLayer": "图层 20",
+      "sourcePath": "9/0"
+    },
+    "browsSad": {
+      "file": "browsSad.png",
+      "x": 886,
+      "y": 866,
+      "width": 740,
+      "height": 102,
+      "sourceLayer": "图层 22",
+      "sourcePath": "9/1"
+    },
+    "browsNeutral": {
+      "file": "browsNeutral.png",
+      "x": 874,
+      "y": 899,
+      "width": 751,
+      "height": 69,
+      "sourceLayer": "图层 21",
+      "sourcePath": "9/2"
+    }
+  }
+}

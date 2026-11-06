@@ -12,8 +12,11 @@ let avatarImages = {};
 let pupilBuffer;
 let gaze = { x: 0, y: 0 };
 
-const ART_PATH = "assets/avatar-half/";
-const RENDER_SCALE = 0.5;
+const quality = new URLSearchParams(window.location.search).get("quality");
+const LIGHT_MODE = quality === "lite" || (quality !== "full" && window.matchMedia("(pointer: coarse)").matches);
+const ART_PATH = LIGHT_MODE ? "assets/avatar-lite/" : "assets/avatar-half/";
+const RENDER_SCALE = LIGHT_MODE ? 0.25 : 0.5;
+let pupilCache = { x: null, y: null };
 const MIRROR_TRACKING = true;
 const EYE_CLOSED_THRESHOLD = 0.22; // Near-closed landmark gap, relative to open eyes.
 const EYE_HALF_THRESHOLD = 0.50;
@@ -82,7 +85,8 @@ let avatar = {
 
 async function setup() {
   pixelDensity(1);
-  const canvas = createCanvas(1460, 1594);
+  frameRate(LIGHT_MODE ? 30 : 60);
+  const canvas = createCanvas(650, 714);
   // Render at half resolution; CSS fits the display to the screen.
   canvas.parent("avatar-stage");
   textAlign(CENTER, CENTER);
@@ -104,7 +108,7 @@ async function setup() {
       avatarImages[name] = await loadImage(ART_PATH + layer.file);
     }
     const eye = artwork.layers.eyeWhite;
-    pupilBuffer = createGraphics(eye.width, eye.height);
+    pupilBuffer = createGraphics(Math.ceil(eye.width * RENDER_SCALE), Math.ceil(eye.height * RENDER_SCALE));
     pupilBuffer.pixelDensity(1);
     document.getElementById("project-status").hidden = true;
   } catch (error) {
@@ -116,23 +120,81 @@ async function setup() {
     return;
   }
 
-  video = createCapture(VIDEO);
-  // Keep face tracking lightweight while the artwork renders at a higher resolution.
-  video.size(640, 480);
-  video.hide();
-  video.elt.setAttribute("playsinline", "");
-  video.elt.muted = true;
-  startFaceTracking();
+  const startButton = document.getElementById("start-tracking");
+  if (LIGHT_MODE) {
+    startButton.hidden = false;
+    setTrackingStatus("角色已加载，请点击启动人脸追踪");
+  } else {
+    startCameraTracking();
+  }
+}
+
+let trackingStarting = false;
+function setTrackingStatus(message) {
+  const status = document.getElementById("tracking-status");
+  if (status) { status.hidden = !message; status.textContent = message; }
+}
+async function startCameraTracking() {
+  if (trackingStarting || modelReady) return;
+  trackingStarting = true;
+  const button = document.getElementById("start-tracking");
+  button.disabled = true;
+  try {
+    if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia) {
+      throw new Error("请通过 HTTPS 链接，在 Safari 或 Chrome 中打开页面");
+    }
+    setTrackingStatus("请允许摄像头访问…");
+    if (video) {
+      for (const track of video.elt.srcObject?.getTracks() || []) track.stop();
+      video.remove();
+    }
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: "user", width: {ideal: LIGHT_MODE ? 320 : 640},
+        height: {ideal: LIGHT_MODE ? 240 : 480}, frameRate: {ideal: 24, max: 30} },
+      audio: false
+    });
+    video = createVideo([]);
+    video.hide();
+    video.elt.playsInline = true;
+    video.elt.setAttribute("playsinline", "");
+    video.elt.muted = true;
+    video.elt.srcObject = stream;
+    await video.elt.play();
+    if (video.elt.readyState < 2) {
+      await new Promise(resolve => video.elt.addEventListener("loadeddata", resolve, {once:true}));
+    }
+    video.size(video.elt.videoWidth, video.elt.videoHeight);
+    setTrackingStatus("摄像头已就绪，正在加载人脸模型，首次需要稍等…");
+    await startFaceTracking();
+    button.hidden = true;
+    setTrackingStatus("");
+  } catch (error) {
+    const reasons = {
+      NotAllowedError: "摄像头未获允许。请在浏览器网站设置中允许摄像头，再重试。",
+      NotFoundError: "没有找到可用摄像头。",
+      NotReadableError: "摄像头被其他应用占用，请关闭后重试。"
+    };
+    setTrackingStatus(reasons[error.name] || "追踪启动失败：" + error.message);
+    button.textContent = "重试人脸追踪";
+    button.hidden = false;
+    console.error("Tracking startup failed:", error);
+  } finally {
+    trackingStarting = false;
+    button.disabled = false;
+  }
 }
 
 async function startFaceTracking() {
   try {
-    faceMesh = await ml5.faceMesh({ maxFaces: 1, refineLandmarks: true });
+    if (LIGHT_MODE) await ml5.setBackend("webgl");
+    faceMesh = await ml5.faceMesh({ maxFaces: 1, refineLandmarks: !LIGHT_MODE });
     faceMesh.detectStart(video, gotFaces);
     modelReady = true;
+    loadError = false;
   } catch (error) {
     console.error("Could not load FaceMesh:", error);
     loadError = true;
+    throw error;
   }
 }
 
@@ -178,7 +240,7 @@ function updateAvatar(points) {
   const targetX = artwork.anchor.x + (cameraX / video.width - 0.5) * artwork.canvas.width * 0.35;
   const targetY = artwork.anchor.y + (bounds.centerY / video.height - 0.5) * artwork.canvas.height * 0.25;
   const targetAngle = MIRROR_TRACKING ? -eyeLineAngle : eyeLineAngle;
-  const targetScale = constrain(bounds.width / 190, 0.9, 1.12);
+  const targetScale = constrain((bounds.width * 640 / video.width) / 190, 0.9, 1.12);
 
   avatar.x = lerp(avatar.x, targetX, 0.2);
   avatar.y = lerp(avatar.y, targetY, 0.2);
@@ -444,14 +506,20 @@ function drawPupils() {
   const white = artwork.layers.eyeWhite;
   const pupils = artwork.layers.pupils;
   drawArtLayer("eyeWhite", true);
-  pupilBuffer.clear();
-  pupilBuffer.image(avatarImages.pupils,
-    pupils.x - white.x + gaze.x, pupils.y - white.y + gaze.y,
-    pupils.width, pupils.height);
-  // Clip the moving iris to the eye-white shape so it cannot spill onto the face.
-  pupilBuffer.drawingContext.globalCompositeOperation = "destination-in";
-  pupilBuffer.image(avatarImages.eyeWhite, 0, 0, white.width, white.height);
-  pupilBuffer.drawingContext.globalCompositeOperation = "source-over";
+  // Only rebuild the small iris surface when the gaze actually changes.
+  if (pupilCache.x !== gaze.x || pupilCache.y !== gaze.y) {
+    pupilBuffer.clear();
+    pupilBuffer.push();
+    pupilBuffer.scale(RENDER_SCALE);
+    pupilBuffer.image(avatarImages.pupils,
+      pupils.x - white.x + gaze.x, pupils.y - white.y + gaze.y,
+      pupils.width, pupils.height);
+    pupilBuffer.drawingContext.globalCompositeOperation = "destination-in";
+    pupilBuffer.image(avatarImages.eyeWhite, 0, 0, white.width, white.height);
+    pupilBuffer.drawingContext.globalCompositeOperation = "source-over";
+    pupilBuffer.pop();
+    pupilCache = { x: gaze.x, y: gaze.y };
+  }
   push();
   translate(artwork.headPivot.x, artwork.headPivot.y);
   rotate(avatar.angle);
